@@ -75,23 +75,20 @@ void trayToggleTask(void *param);
  
 void opcontrol()
 {
-    //Starting Tasks
-    pros::Task rollerLiftToggleTaskHandle(rollerLiftToggleTask);
-    pros::Task trayPIDTaskHandle(trayPIDTask);
-    pros::Task rollerLiftPIDTaskHandle(rollerLiftPIDTask);
-    pros::Task trayToggleTaskHandle(trayToggleTask);
-    rollerLiftPosition = 400;
- 
-    while (true)
-    {
-        //Drive Mode:Arcade 
-        chassis.arcade(controller.getAnalog(ControllerAnalog::leftY), controller.getAnalog(ControllerAnalog::rightX));
-        //Controls roller intake and its direction
-        rollers.moveVelocity(200 * controller.getDigital(ControllerDigital::L1) - 
-            200 * controller.getDigital(ControllerDigital::Y) - 50 * controller.getDigital(ControllerDigital::L2));
-        
-        pros::delay(20);
-    }
+   okapi::Controller controller;
+
+
+	std::shared_ptr<ChassisController> drive =
+	  ChassisControllerBuilder()
+	    .withMotors({-1, -2}, {6, 8})
+	    .withDimensions(AbstractMotor::gearset::green, {{4.125, 10}, imev5GreenTPR})
+	    .build();
+
+	while (true){
+		drive -> getModel() -> tank(controller.getAnalog(okapi::ControllerAnalog::leftY), controller.getAnalog(okapi::ControllerAnalog::rightY));
+    pros::delay(10);
+
+	}
 }
  
 void trayLiftPID(double value)
